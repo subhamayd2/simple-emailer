@@ -1,0 +1,114 @@
+<div class="jumbotron">
+  <div class="row">
+    <div class="col-sm-12">
+      <input class="form-control hidden" #fileinput type="file" accept=".xlsx,.xls" (change)="newFile($event)">
+      <div class="file-input-wrapper">
+        <div class="file-input" (click)="openFileChooser()" *ngIf="!file">
+          <h1>+</h1>
+        </div>
+
+        <div class="file-icon" *ngIf="file">
+          <img src="assets/excel-icon.png">
+          <p>{{filename}}</p>
+          <div class="file-icon-remove" (click)="openFileChooser()">
+            <h5>
+              <i class="fa fa-trash-o fa-2x"></i>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="loader" *ngIf="fileLoading">
+        <img src="assets/loader.svg">
+      </div>
+    </div>
+    <div class="col-sm-12 info-label" *ngIf="!fileLoading && !file">
+      <p><i class="fa fa-angle-double-up fa-3x"></i></p>
+      <h1>Select a file to get started!</h1>
+    </div>
+  </div>
+</div>
+<div class="content" *ngIf="data">
+  <div class="row">
+    <div class="col-sm-12">
+      <div class="sheet-nav">
+        <ul class="nav nav-tabs nav-justified">
+          <li *ngFor="let sheet of sheets" class="nav-item" (click)="changeTab(sheet)">
+            <a class="nav-link" [ngClass]="currentSheet == sheet? 'active' : ''">{{sheet}}</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-sm-12">
+      <div class="email-preview-wrapper">
+        <div class="email-preview">
+          <div class="email-to-wrapper email-box-wrapper">
+            <p class="label">To</p>
+            <div class="email-to-contacts-wrapper email-box">
+              <tag-input 
+               [editable]='true'
+               [separatorKeyCodes]="[59]"
+               [theme]="'foundation-theme'"
+               [asyncValidators]="[toTagValidator]"
+               [ripple]="false"
+               [errorMessages]="toTagErrorMsg"
+               placeholder="+ Employee IDs"
+              [(ngModel)]="currentSheetData[Columns.to]"></tag-input>
+            </div>
+          </div>
+          <!-- CC start -->
+          <div class="email-to-wrapper email-box-wrapper" 
+            *ngIf="currentSheetData[Columns.cc]"
+            [@tabChangeAnim]='state'>
+            <p class="label">CC</p>
+            <div class="email-to-contacts-wrapper email-box">
+              <tag-input 
+               [editable]='true'
+               [separatorKeyCodes]="[59]"
+               [theme]="'foundation-theme'"
+               [asyncValidators]="[toTagValidator]"
+               [ripple]="false"
+               [errorMessages]="toTagErrorMsg"
+               placeholder="+ Employee IDs"
+              [(ngModel)]="currentSheetData[Columns.cc]"></tag-input>
+            </div>
+          </div>
+          <!-- CC end -->
+          <!-- BCC start -->
+          <div class="email-to-wrapper email-box-wrapper" 
+            *ngIf="currentSheetData[Columns.bcc]"
+            [@tabChangeAnim]='state'>
+            <p class="label">BCC</p>
+            <div class="email-to-contacts-wrapper email-box">
+              <tag-input 
+               [editable]='true'
+               [separatorKeyCodes]="[59]"
+               [theme]="'foundation-theme'"
+               [asyncValidators]="[toTagValidator]"
+               [ripple]="false"
+               [errorMessages]="toTagErrorMsg"
+               placeholder="+ Employee IDs"
+              [(ngModel)]="currentSheetData[Columns.bcc]"></tag-input>
+            </div>
+          </div>
+          <!-- BCC end -->
+          <div class="email-subject-wrapper email-box-wrapper">
+            <p class="label">Subject</p>
+            <div class="email-subject email-box">
+              <input type="text" name="subject" [(ngModel)]="currentSheetData[Columns.subject]" >
+            </div>
+          </div>
+          <div class="email-body-wrapper email-box-wrapper">
+            <p class="label">Body</p>
+            <div class="email-body email-box">
+              <textarea name="body" [(ngModel)]="currentSheetData[Columns.message]"></textarea>
+            </div>
+          </div>
+          <button class="btn btn-block btn-outline-secondary" (click)="sendEmail()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <button (click)="disp()" class="btn btn-info">Log</button> -->
+</div>
